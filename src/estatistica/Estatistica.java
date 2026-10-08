@@ -36,7 +36,7 @@ public abstract class Estatistica {
     }
 
     @Override
-    public String toString(){
+    public  String toString(){
         return "============= Estatistica Geral ===========\n"+
                 "Total de Linhas: "+totalLinhas+"\n"+
                 "Estudantes Inseridos: "+totalEstudantes+"\n";
