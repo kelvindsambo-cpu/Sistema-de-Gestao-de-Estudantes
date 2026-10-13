@@ -24,7 +24,7 @@ public class LeitorCSV {
 
     // Procura o CSV ao lado de LeitorCSV.class (funciona no VS Code, que copia
     // src/dados/estudantes.csv para a pasta de saída), e depois em src/dados/.
-    private BufferedReader abrirFicheiro() throws IOException {
+    public BufferedReader abrirFicheiro() throws IOException {
         InputStream in = LeitorCSV.class.getResourceAsStream(NOME_FICHEIRO);
         if (in != null) {
             return new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));

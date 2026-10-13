@@ -1,30 +1,18 @@
 package estatistica;
+import dados.*;
 import java.io.*;
 
 public abstract class Estatistica {
-    protected File ficheiroEstudante = new File("./src/dados/estudantes.csv");
-    protected int totalLinhas = contarLinhas();
-    protected int totalEstudantes = totalLinhas - 1;
+    protected LeitorCSV ficheiroEstudante;
+    protected final Dados dados;
+    protected final int totalLinhas;
+    protected final int totalEstudantes;
 
-
-
-   // this.ficheiroEstudante
-    //this.totalLinhas
-    //this.totalEstudantes
-
-
-    private int contarLinhas() {
-        int total = 0;
-        try {
-        BufferedReader br = new BufferedReader(new FileReader(ficheiroEstudante));
-            while (br.ready()) {
-                br.readLine();
-                total += 1;
-            }
-        } catch(IOException e) {
-            System.out.println("Não foi possível ler o ficheiro");
-        }
-        return total;
+    public Estatistica(){
+        this.ficheiroEstudante = new LeitorCSV();
+        this.dados = ficheiroEstudante.lerDados();
+        this.totalLinhas = dados.getLidas();
+        this.totalEstudantes = dados.getInseridos();
     }
 
     public int getTotalEstudantes() {
@@ -35,12 +23,6 @@ public abstract class Estatistica {
         return totalLinhas;
     }
 
-    @Override
-    public  String toString(){
-        return "============= Estatistica Geral ===========\n"+
-                "Total de Linhas: "+totalLinhas+"\n"+
-                "Estudantes Inseridos: "+totalEstudantes+"\n";
-    }
-
+    public  abstract String toString();
 }
 

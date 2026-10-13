@@ -1,9 +1,8 @@
 package estatistica;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.StringTokenizer;
+
 
 public class EstatisticaPorSexo extends Estatistica{
     private int totalMasculino;
@@ -12,16 +11,16 @@ public class EstatisticaPorSexo extends Estatistica{
     private double percentagemFeminino;
 
     public EstatisticaPorSexo(){
-        this.totalMasculino = contarMasculino();
+        this.totalMasculino =  contarMasculino();
         this.totalFeminino = totalEstudantes - totalMasculino;
-        this.percentagemMasculino = (double) (totalMasculino/totalEstudantes) * 100;
+        this.percentagemMasculino = (double) Math.round(((double) totalMasculino / totalEstudantes) * 10000) /100;
         this.percentagemFeminino = 100 - percentagemMasculino;
+
     }
 
     private int contarMasculino() {
         int total = 0;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(ficheiroEstudante));
+        try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
             br.readLine();
             while (br.ready()) {
                 String[] tokens = br.readLine().split(",");
@@ -38,10 +37,10 @@ public class EstatisticaPorSexo extends Estatistica{
     @Override
     public String toString(){
         return "============== Estatistíca Por Sexo ===========\n"+
-                "Quantidade masculino: "+totalMasculino+"\n"+
-                "Quantidade feminino: "+totalFeminino+"\n"+
-                "Percentagem masculino: "+percentagemMasculino+"\n"+
-                "Percentagem feminino: "+percentagemFeminino;
+                "Quantidade masculina: "+totalMasculino+"\n"+
+                "Quantidade feminina: "+totalFeminino+"\n"+
+                "Percentagem masculina: "+percentagemMasculino+"%\n"+
+                "Percentagem feminina: "+percentagemFeminino+"%";
 
     }
 }
