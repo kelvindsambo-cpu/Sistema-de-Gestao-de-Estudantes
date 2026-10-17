@@ -1,3 +1,5 @@
 /.idea/compiler.xml
 *.class
 /out
+/.vscode
+/.idea
