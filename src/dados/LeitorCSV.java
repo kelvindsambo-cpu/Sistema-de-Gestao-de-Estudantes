@@ -89,5 +89,58 @@ public class LeitorCSV {
         return dados;
     }
 
+    public Dados lerDados(int limite){//Método para testar o desempenho
+
+        Dados dados = new Dados();
+
+        try(BufferedReader br = abrirFicheiro()) {
+            br.readLine();
+            String linha;
+            StringTokenizer st;
+            Estudante estudante;
+            int c = 0;
+            while((linha = br.readLine()) != null && c < limite) {
+                dados.incrementarLidas();
+
+                st = new StringTokenizer(linha, ",");
+
+                try {
+                    estudante = new Estudante(
+                            st.nextToken(),
+                            st.nextToken(),
+                            st.nextToken(),
+                            Integer.parseInt(st.nextToken()),
+                            Integer.parseInt(st.nextToken()),
+                            st.nextToken(),
+                            Double.parseDouble(st.nextToken())
+                    );
+
+                    Resposta resposta = Validacao.validarEstudante(estudante);
+
+                    switch(resposta.getEstado()) {
+                        case EstadoValidacao.VALIDO: dados.inserir(estudante);
+                            break;
+                        case EstadoValidacao.INVALIDO: dados.incrementarInvalidos();
+                            break;
+                        default: System.out.println("Impossivel");
+                            break;
+                    }
+                    c++;
+
+                } catch (CodigoDuplicadoException e) {
+                    dados.incrementarDuplicados();
+                } catch (Exception e) {
+                    dados.incrementarInvalidos();
+                }
+
+            }
+
+        } catch(IOException e) {
+            System.out.println("Erro ao ler dados do ficheiro estudantes.csv: " + e.getMessage() + "\n");
+        }
+
+        return dados;
+    }
+
 }
 

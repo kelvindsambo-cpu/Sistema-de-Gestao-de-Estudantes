@@ -15,8 +15,8 @@ public class EstatisticaDeIdade extends Estatistica{
         this.idadeMedia = calcularIdadeMedia();
         this.idadeExtremo = new int[2];
         this.idadeIntervalo = new int[5];
-        ArrayInitializer(idadeExtremo);
-        ArrayInitializer(idadeIntervalo);
+        Arrays.fill(idadeExtremo,0);
+        Arrays.fill(idadeIntervalo,0);
         idadesPorIntervalo(idadeExtremo, idadeIntervalo);
     }
 
@@ -36,7 +36,7 @@ public class EstatisticaDeIdade extends Estatistica{
     }
 
     private void idadesPorIntervalo(int[] idadeExtremo,int[] idadeIntervalo){
-        int maiorIdade = 0, menorIdade = 99,indexExtremo,indexIntervalo;
+        int maiorIdade = 0, menorIdade = 99,indexIntervalo;
         try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
             br.readLine();
             while(br.ready()){
@@ -50,11 +50,11 @@ public class EstatisticaDeIdade extends Estatistica{
 
                 if(idade < 18){
                     indexIntervalo = IdadeIntervalo.MENOR18.ordinal();
-                }else if(18 <= idade && idade <= 20){
+                }else if(idade <= 20){
                     indexIntervalo = IdadeIntervalo.ENTRE18E20.ordinal();
-                }else if(20 < idade && idade <= 23){
+                }else if(idade <= 23){
                     indexIntervalo = IdadeIntervalo.ENTRE21E23.ordinal();
-                }else if(23 < idade && idade <= 26){
+                }else if(idade <= 26){
                     indexIntervalo = IdadeIntervalo.ENTRE24E26.ordinal();
                 }else{
                     indexIntervalo = IdadeIntervalo.MAIOR26.ordinal();
@@ -68,10 +68,6 @@ public class EstatisticaDeIdade extends Estatistica{
         }
     }
 
-    private void ArrayInitializer(int[] array){
-        Arrays.fill(array, 0);
-    }
-
     @Override
     public String toString(){
         StringBuilder build = new StringBuilder();
@@ -82,9 +78,10 @@ public class EstatisticaDeIdade extends Estatistica{
                 "Idade Média: "+idadeMedia+"\n"+
                 "Menor idade: "+idadeExtremo[0]+"\n"+
                 "Maior idade: "+idadeExtremo[1]+"\n"+
-                "\nQuantidade por intervalo \n"+build.toString();
+                "\nQuantidade por intervalo \n"+build;
     }
 }
+
 enum IdadeIntervalo{
     MENOR18("< 18"),
     ENTRE18E20("18-20"),

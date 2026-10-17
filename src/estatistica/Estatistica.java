@@ -17,14 +17,6 @@ public abstract class Estatistica {
         this.totalEstudantes = dados.getInseridos();
     }
 
-    public int getTotalEstudantes() {
-        return totalEstudantes;
-    }
-
-    public int getTotalLinhas() {
-        return totalLinhas;
-    }
-
     public  abstract String toString();
 }
 

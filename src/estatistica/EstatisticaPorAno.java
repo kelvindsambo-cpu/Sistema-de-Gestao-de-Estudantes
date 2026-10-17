@@ -12,11 +12,16 @@ public class EstatisticaPorAno extends Estatistica{
             while (br.ready()){
                 String[] linha = br.readLine().split(",");
                 int ano = Integer.parseInt(linha[3]);
+                int index;
                 switch(ano){
-                    case 1: year[0]++;break;
-                    case 2: year[1]++;break;
-                    case 3: year[2]++;break;
-                    case 4: year[3]++;break;
+                    case 1 -> index = 0;
+                    case 2 -> index = 1;
+                    case 3 -> index = 2;
+                    case 4 -> index = 3;
+                    default -> index = -1;
+                }
+                if(index != -1) {
+                    year[index]++;
                 }
             }
         }catch(IOException e){
@@ -26,11 +31,11 @@ public class EstatisticaPorAno extends Estatistica{
     }
     @Override
     public String toString(){
-        return "============= Estatística Por Ano ==============\n"+
-                "Estudantes do  1ºAno: "+ano[0]+"\n"+
-                "Estudantes do  2ºAno: "+ano[1]+"\n"+
-                "Estudantes do  3ºAno: "+ano[2]+"\n"+
-                "Estudantes do  4ºAno: "+ano[3]+"\n"
-                ;
+        StringBuilder relatorio = new StringBuilder();
+        relatorio.append("============= Estatística Por Ano ==============\n");
+        for(int i = 0; i < ano.length;i++){
+            relatorio.append("Estudantes do  "+(i+1)+"ºAno: "+ano[i]+"\n");
+        }
+        return relatorio.toString();
     }
 }

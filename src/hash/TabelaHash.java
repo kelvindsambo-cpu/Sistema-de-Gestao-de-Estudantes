@@ -3,6 +3,7 @@ package hash;
 import java.util.ArrayList;
 import java.util.List;
 import model.*;
+import utils.Rounder;
 
 public class TabelaHash {
 
@@ -339,7 +340,7 @@ public class TabelaHash {
         if (numInsercoes == 0) {
             return 0;
         }
-        return (double) totalSondagens / numInsercoes;
+        return Rounder.round((double) totalSondagens / numInsercoes,2);
     }
 
     public int getNumRedimensionamentos() {
@@ -363,7 +364,7 @@ public class TabelaHash {
     }
 
     public double getFactorCarga() {
-        return (double) tamanho / tabela.length;
+        return Rounder.round((double) tamanho / tabela.length,2);
     }
 
 }

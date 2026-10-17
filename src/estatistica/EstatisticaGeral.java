@@ -9,7 +9,7 @@ public class EstatisticaGeral extends Estatistica{
     }
     @Override
     public String toString(){
-        return "============= Estatistica Geral ===========\n"+
+        return "============= Estatistica Geral =============\n"+
                 "Total de Linhas: "+dados.getLidas()+"\n"+
                 "Estudantes Inseridos: "+totalEstudantes+"\n"+
                 "Registos válidos: "+dados.getValidos()+"\n"+

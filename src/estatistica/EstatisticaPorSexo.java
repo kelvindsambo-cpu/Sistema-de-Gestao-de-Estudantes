@@ -17,7 +17,6 @@ public class EstatisticaPorSexo extends Estatistica{
         this.totalFeminino = totalEstudantes - totalMasculino;
         this.percentagemMasculino = Rounder.round((double) totalMasculino / totalEstudantes,3);
         this.percentagemFeminino = 100 - percentagemMasculino;
-
     }
 
     private int contarMasculino() {
