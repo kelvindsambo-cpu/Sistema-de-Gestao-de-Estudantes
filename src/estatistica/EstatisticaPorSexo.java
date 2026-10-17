@@ -1,5 +1,7 @@
 package estatistica;
 
+import utils.Rounder;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -13,7 +15,7 @@ public class EstatisticaPorSexo extends Estatistica{
     public EstatisticaPorSexo(){
         this.totalMasculino =  contarMasculino();
         this.totalFeminino = totalEstudantes - totalMasculino;
-        this.percentagemMasculino = (double) Math.round(((double) totalMasculino / totalEstudantes) * 10000) /100;
+        this.percentagemMasculino = Rounder.round((double) totalMasculino / totalEstudantes,3);
         this.percentagemFeminino = 100 - percentagemMasculino;
 
     }

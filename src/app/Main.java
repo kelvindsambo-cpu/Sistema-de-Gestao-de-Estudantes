@@ -43,8 +43,9 @@ public class Main {
                         "Pesquisa Tabela Hash: "+total1+"µs\n"
         );
 
-        Estatistica stat3 = new EstatisticaPorCurso();
+        Estatistica stat3 = new EstatisticaHashTable(th);
         IO.println(stat3.toString());
+
     }
 
 }

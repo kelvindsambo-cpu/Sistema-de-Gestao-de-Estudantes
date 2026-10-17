@@ -1,5 +1,7 @@
 package estatistica;
 import dados.*;
+import utils.Rounder;
+
 import java.io.*;
 
 public abstract class Estatistica {

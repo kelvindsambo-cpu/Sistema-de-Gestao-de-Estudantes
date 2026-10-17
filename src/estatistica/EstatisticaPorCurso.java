@@ -1,10 +1,12 @@
 package estatistica;
 
+import utils.Rounder;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class EstatisticaPorCurso extends Estatistica{
-    private Curso[] cursos ;
+    private Curso[] cursos;
 
     public EstatisticaPorCurso(){
         this.cursos = new Curso[4];
@@ -15,6 +17,7 @@ public class EstatisticaPorCurso extends Estatistica{
         percentagemPorCurso(cursos);
     }
 
+    //A classe faz calculo das médias e conta o total de alunos por curso
     private void totalPorCurso(Curso[] cursos){
         try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
             br.readLine();
@@ -28,13 +31,15 @@ public class EstatisticaPorCurso extends Estatistica{
                     case "Engenharia de Redes" -> NumCurso.REDES.ordinal();
                     default -> -1;
                 };
-                cursos[index].total++;
-                cursos[index].media += media;
+                if(index != -1) {
+                    cursos[index].total++;
+                    cursos[index].media += media;
+                }
             }
             for(NumCurso i : NumCurso.values()){
                 Curso curso = cursos[i.ordinal()];
                 curso.media /= curso.total;
-                curso.media = (double) Math.round(curso.media*100) /100;
+                curso.media = Rounder.round(curso.media,2);
             }
         } catch(IOException e) {
             System.out.println("Não foi possível ler o ficheiro");
@@ -45,7 +50,7 @@ public class EstatisticaPorCurso extends Estatistica{
         for(NumCurso i : NumCurso.values()){
             Curso curso = cursos[i.ordinal()];
             curso.nome = i.nome;
-            curso.percentagem = (double) curso.total / totalEstudantes * 100 ;
+            curso.percentagem = Rounder.round((double)curso.total/totalEstudantes,2);
         }
     }
     @Override
@@ -66,6 +71,7 @@ public class EstatisticaPorCurso extends Estatistica{
     }
 }
 
+//Classes auxiliares
 class Curso{
      String nome;
      double media;
