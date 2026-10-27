@@ -64,7 +64,7 @@ public class Estudante {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return "Estudante { " +
                 "codigo: " + codigo +
                 ", nome: " + nome +
@@ -73,7 +73,7 @@ public class Estudante {
                 ", idade: " + idade +
                 ", sexo: " + sexo +
                 ", media: " + media +
-                " }\n";
+                " }";
     }
 
 }

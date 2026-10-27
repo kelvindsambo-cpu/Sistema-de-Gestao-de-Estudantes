@@ -4,20 +4,24 @@ import hash.TabelaHash;
 import model.Estudante;
 
 public class Dados {
-    
+
     private final TabelaHash tabela;
     private int invalidos;
     private int duplicados; // válidos, mas com código já existente
+    private int inseridos;
     private int lidas;
 
     public Dados() {
         this.tabela = new TabelaHash();
         this.invalidos = 0;
         this.duplicados = 0;
+        this.inseridos = 0;
+        this.lidas = 0;
     }
 
     public void inserir(Estudante estudante) {
         this.tabela.inserir(estudante);
+        this.inseridos++;
     }
 
     public void incrementarInvalidos() {
@@ -50,11 +54,11 @@ public class Dados {
 
     // Válidos = passaram a validação; inclui os duplicados, que não foram inseridos.
     public int getValidos() {
-        return this.tabela.getTamanho() + this.duplicados;
+        return this.inseridos + this.duplicados;
     }
 
     public int getInseridos() {
-        return this.tabela.getTamanho();
+        return this.inseridos;
     }
 
 }
