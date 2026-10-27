@@ -3,7 +3,6 @@ package hash;
 import java.util.ArrayList;
 import java.util.List;
 import model.*;
-import utils.Rounder;
 
 public class TabelaHash {
 
@@ -113,6 +112,7 @@ public class TabelaHash {
             maiorSondagem = sondagens;
         }
 
+        // Compara o valor exacto de α (sem arredondar), para redimensionar logo que α > 0,70.
         if (getFactorCarga() > FACTOR_CARGA_MAXIMO) {
             reconstruir(proximoPrimo(2 * tabela.length));
             numRedimensionamentos++;
@@ -171,13 +171,13 @@ public class TabelaHash {
     }
 
     private int procurarPosicao(String codigo) {
+        ultimasSondagens = 0;
         if (codigo == null || codigo.isEmpty())
-            throw new IllegalArgumentException("Código inválido");
+            return -1; // um código vazio nunca está na tabela
 
         int k = converterChave(codigo);
         int pos = h1(k);
         int passo = h2(k);
-        ultimasSondagens = 0;
 
         for (int i = 0; i < tabela.length; i++) {
             Entrada actual = tabela[pos];
@@ -198,7 +198,25 @@ public class TabelaHash {
         return -1;
     }
 
-    // Para auxiliar na defesa. Podemos ou não remover
+    // Para o teste da defesa: devolve {A, B} em que A ocupa a posição inicial h1 de B,
+    // ou seja, B colidiu com A e ficou mais à frente na sequência de sondagem.
+    // Removendo A e pesquisando B, a pesquisa passa pela posição REMOVIDO.
+    public String[] encontrarColisao() {
+        for (Entrada entrada : tabela) {
+            if (entrada.getEstado() != EstadoEntrada.OCUPADO) {
+                continue;
+            }
+            String codigo = entrada.getEstudante().getCodigo();
+            Entrada naPosicaoInicial = tabela[h1(converterChave(codigo))];
+
+            if (naPosicaoInicial != entrada && naPosicaoInicial.getEstado() == EstadoEntrada.OCUPADO) {
+                return new String[] { naPosicaoInicial.getEstudante().getCodigo(), codigo };
+            }
+        }
+        return null;
+    }
+
+    // Para auxiliar na defesa: mostra k, h1, h2 e cada posição sondada, sem alterar a tabela.
     public String descreverSondagem(String codigo) {
         if (codigo == null || codigo.isEmpty())
             throw new IllegalArgumentException("Código inválido");
@@ -340,7 +358,7 @@ public class TabelaHash {
         if (numInsercoes == 0) {
             return 0;
         }
-        return Rounder.round((double) totalSondagens / numInsercoes,2);
+        return (double) totalSondagens / numInsercoes;
     }
 
     public int getNumRedimensionamentos() {
@@ -363,8 +381,9 @@ public class TabelaHash {
         return tabela.length;
     }
 
+    // α = n / m, sem arredondar (o arredondamento é só para apresentação).
     public double getFactorCarga() {
-        return Rounder.round((double) tamanho / tabela.length,2);
+        return (double) tamanho / tabela.length;
     }
 
 }
