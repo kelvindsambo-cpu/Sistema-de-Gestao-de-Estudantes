@@ -1,28 +1,30 @@
 package desempenho;
 
-import dados.LeitorCSV;
-import hash.TabelaHash;
 import model.Estudante;
 
 import java.util.List;
 
 public class PesquisaSequencial {
-    private LeitorCSV leitura;
-    private List<Estudante> listaEstudantes;
+    private final Estudante[] estudantes;
+    private int ultimasComparacoes;
 
-    public PesquisaSequencial(){
-        this.leitura = new LeitorCSV();
-        this.listaEstudantes = leitura.lerDados().getTabelaHash().listar();
+    public PesquisaSequencial(List<Estudante> estudantes){
+        this.estudantes = estudantes.toArray(new Estudante[0]);
     }
 
     public Estudante pesquisar(String codigo){
-        Estudante estudante = null;
-        for (Estudante e : listaEstudantes) {
+        ultimasComparacoes = 0;
+        for (Estudante e : estudantes) {
+            ultimasComparacoes++;
             if(e.getCodigo().equals(codigo)){
                 return e;
             }
         }
-        return estudante;
+        return null;
+    }
+
+    public int getUltimasComparacoes() {
+        return ultimasComparacoes;
     }
 
 }

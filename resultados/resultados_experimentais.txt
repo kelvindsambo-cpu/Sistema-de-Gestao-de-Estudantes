@@ -1,0 +1,132 @@
+RESULTADOS DOS TESTES EXPERIMENTAIS
+Sistema de Gestao de Estudantes com Tabela Hash
+
+Data da execucao : 2026-10-27
+Computador       : Intel Pentium Silver N5030 @ 1.10GHz, 4 GB RAM, Windows 11
+Java             : java version "26.0.2" 2026-07-21
+Ficheiro         : src/dados/estudantes.csv (10 000 registos)
+Comandos         : opcoes 1, 6, 7 e 8 do menu
+
+
+--- CARREGAR FICHEIRO CSV ---
+Leitura do ficheiro concluida!
+Linhas lidas: 10000
+Estudantes inseridos: 10000
+Registos validos: 10000
+Registos invalidos: 0
+Registos duplicados: 0
+
+============= Estatistica Geral =============
+Total de linhas lidas: 10000
+Registos validos: 10000
+Registos invalidos: 0
+Registos duplicados (validos, nao inseridos): 0
+Estudantes inseridos: 10000
+Estudantes actualmente na tabela: 10000
+
+============== Estatistica Por Sexo ===========
+Quantidade masculina: 4948
+Quantidade feminina: 5052
+Percentagem masculina: 49.48%
+Percentagem feminina: 50.52%
+
+============= Estatistica por Curso ==================
+Engenharia Electronica
+--------------------------------
+Estudantes : 2505
+Percentagem : 25.05%
+Media : 12.53
+
+Engenharia Informatica
+--------------------------------
+Estudantes : 2460
+Percentagem : 24.60%
+Media : 12.42
+
+Engenharia Telecomunicacoes
+--------------------------------
+Estudantes : 2433
+Percentagem : 24.33%
+Media : 12.40
+
+Engenharia de Redes
+--------------------------------
+Estudantes : 2602
+Percentagem : 26.02%
+Media : 12.41
+
+============= Estatistica Por Ano ==============
+Estudantes do 1.o ano: 2482
+Estudantes do 2.o ano: 2510
+Estudantes do 3.o ano: 2482
+Estudantes do 4.o ano: 2526
+
+============= Estatisticas das medias ==========
+Media academica geral: 12.44
+Maior media: 20.0
+Menor media: 5.0
+Estudante com maior media: Carlos Jose (20260328) e mais 28 com a mesma media
+Estudante com menor media: Samuel Ernesto (20268896) e mais 42 com a mesma media
+Medias por intervalo
+Quantidade com media inferior a 10: 3336
+Quantidade com media entre 10 e 13,9: 2679
+Quantidade com media entre 14 e 16,9: 2004
+Quantidade com media igual ou superior a 17: 1981
+
+============= Estatistica de Idade =============
+Idade media: 23.45
+Menor idade: 17
+Maior idade: 30
+Quantidade por intervalo
+Quantidade no intervalo < 18 : 750
+Quantidade no intervalo 18-20 : 2118
+Quantidade no intervalo 21-23 : 2183
+Quantidade no intervalo 24-26 : 2088
+Quantidade no intervalo > 26 : 2861
+
+--- ESTATISTICAS DA HASH TABLE ---
+========== ESTATISTICAS DA HASH TABLE ==========
+Capacidade inicial : 1009
+Capacidade final : 16249
+Elementos armazenados : 10000
+Factor de carga : 0.6154
+Colisoes : 10434
+Sondagens realizadas : 20434
+Media sondagens/insercao : 2.04
+Maior sondagem : 22
+Redimensionamentos : 4
+Limpezas de REMOVIDO : 0
+Posicoes REMOVIDO actuais : 0
+
+--- TESTE DE DESEMPENHO ---
+A executar (pode demorar alguns segundos)...
+
+================ EXPERIENCIA DE DESEMPENHO ================
+Registos  Colisoes  Media sond. Max. sond. Carga   Tempo insercao   Tempo pesquisa  
+1000      615       1.62        11         0.4933  0.119 ms         55.1 ns         
+5000      4446      1.89        15         0.6160  1.168 ms         73.6 ns         
+10000     10434     2.04        22         0.6154  2.552 ms         98.5 ns         
+
+Tempo insercao: tempo total para inserir todos os registos (mediana de 10 execucoes).
+Tempo pesquisa: tempo medio por pesquisa, com 1000 codigos existentes (mediana de 10 execucoes).
+
+--- COMPARAR PESQUISAS ---
+A executar (pode demorar alguns segundos)...
+
+============== PESQUISA SEQUENCIAL vs HASH ==============
+Tempo medio por pesquisa (ns) e media de posicoes examinadas
+
+Registos  Codigos      Hash                   Sequencial             Sequencial/Hash
+1000      existentes   52.4 ns (1.15 sond.)   5772.2 ns (501 comp.)  110x      
+1000      inexistentes 48.6 ns (1.45 sond.)   9336.9 ns (1000 comp.) 192x      
+5000      existentes   58.3 ns (1.25 sond.)   28136.8 ns (2499 comp.) 483x      
+5000      inexistentes 82.4 ns (2.64 sond.)   57713.9 ns (5000 comp.) 700x      
+10000     existentes   92.6 ns (1.79 sond.)   107037.5 ns (4996 comp.) 1157x     
+10000     inexistentes 97.2 ns (2.24 sond.)   135272.8 ns (10000 comp.) 1392x     
+
+1000 codigos de cada tipo; tempo medio por pesquisa, mediana de 10 execucoes.
+sond. = posicoes da tabela sondadas; comp. = estudantes comparados na lista.
+
+Nota: os tempos podem variar entre execucoes e computadores.
+
+Sistema terminado!
