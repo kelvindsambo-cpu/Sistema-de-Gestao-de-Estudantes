@@ -1,84 +1,54 @@
 package estatistica;
 
+import java.util.List;
 import model.Estudante;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.Arrays;
+import utils.Rounder;
 
 public class EstatisticaDeIdade extends Estatistica{
-    private int idadeMedia;
-    private int[] idadeExtremo; // 0 - extremo inferior e 1- extremo superior
+    private double idadeMedia;
+    private int menorIdade;
+    private int maiorIdade;
     private int[] idadeIntervalo;
 
-    public EstatisticaDeIdade(){
-        this.idadeMedia = calcularIdadeMedia();
-        this.idadeExtremo = new int[2];
-        this.idadeIntervalo = new int[5];
-        Arrays.fill(idadeExtremo,0);
-        Arrays.fill(idadeIntervalo,0);
-        idadesPorIntervalo(idadeExtremo, idadeIntervalo);
+    public EstatisticaDeIdade(List<Estudante> estudantes){
+        super(estudantes);
+        this.idadeIntervalo = new int[IdadeIntervalo.values().length];
+        calcular();
     }
 
-    private int calcularIdadeMedia(){
-        int idadeMedia = 0;
-        try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
-            br.readLine();
-            while(br.ready()){
-                String[] token = br.readLine().split(",");
-                idadeMedia += Integer.parseInt(token[4]);
-            }
-            idadeMedia /= totalEstudantes;
-        }catch(IOException e){
-            System.out.println("Não foi possivel abrir o ficheiro");
-        }
-        return idadeMedia;
-    }
+    private void calcular(){
+        long soma = 0;
+        menorIdade = Integer.MAX_VALUE;
+        maiorIdade = Integer.MIN_VALUE;
 
-    private void idadesPorIntervalo(int[] idadeExtremo,int[] idadeIntervalo){
-        int maiorIdade = 0, menorIdade = 99,indexIntervalo;
-        try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
-            br.readLine();
-            while(br.ready()){
-                String[] token = br.readLine().split(",");
-                int idade = Integer.parseInt(token[4]);
-                if(idade < menorIdade){
-                    menorIdade = idade;
-                } else if(idade > maiorIdade){
-                    maiorIdade = idade;
-                }
-
-                if(idade < 18){
-                    indexIntervalo = IdadeIntervalo.MENOR18.ordinal();
-                }else if(idade <= 20){
-                    indexIntervalo = IdadeIntervalo.ENTRE18E20.ordinal();
-                }else if(idade <= 23){
-                    indexIntervalo = IdadeIntervalo.ENTRE21E23.ordinal();
-                }else if(idade <= 26){
-                    indexIntervalo = IdadeIntervalo.ENTRE24E26.ordinal();
-                }else{
-                    indexIntervalo = IdadeIntervalo.MAIOR26.ordinal();
-                }
-                idadeIntervalo[indexIntervalo] += 1;
+        for (Estudante e : estudantes) {
+            int idade = e.getIdade();
+            soma += idade;
+            if(idade < menorIdade){
+                menorIdade = idade;
             }
-            idadeExtremo[0] = menorIdade;
-            idadeExtremo[1] = maiorIdade;
-        }catch(IOException e){
-            System.out.println("O ficheiro não foi encontrado");
+            if(idade > maiorIdade){
+                maiorIdade = idade;
+            }
+            idadeIntervalo[IdadeIntervalo.de(idade).ordinal()]++;
         }
+        idadeMedia = totalEstudantes == 0 ? 0 : (double) soma / totalEstudantes;
     }
 
     @Override
     public String toString(){
+        if (totalEstudantes == 0) {
+            return "============= Estatistica de Idade =============\nSem estudantes.\n";
+        }
         StringBuilder build = new StringBuilder();
         for(IdadeIntervalo l:IdadeIntervalo.values()){
             build.append("Quantidade no intervalo "+l.designacao+" : "+idadeIntervalo[l.ordinal()]+"\n");
         }
-        return "============= Estatística de Idade =============\n"+
-                "Idade Média: "+idadeMedia+"\n"+
-                "Menor idade: "+idadeExtremo[0]+"\n"+
-                "Maior idade: "+idadeExtremo[1]+"\n"+
-                "\nQuantidade por intervalo \n"+build;
+        return "============= Estatistica de Idade =============\n"+
+                "Idade media: "+Rounder.formatar(idadeMedia,2)+"\n"+
+                "Menor idade: "+menorIdade+"\n"+
+                "Maior idade: "+maiorIdade+"\n"+
+                "Quantidade por intervalo\n"+build;
     }
 }
 
@@ -92,6 +62,14 @@ enum IdadeIntervalo{
 
    IdadeIntervalo(String designacao){
         this.designacao = designacao;
+    }
+
+    static IdadeIntervalo de(int idade) {
+        if (idade < 18) return MENOR18;
+        if (idade <= 20) return ENTRE18E20;
+        if (idade <= 23) return ENTRE21E23;
+        if (idade <= 26) return ENTRE24E26;
+        return MAIOR26;
     }
 
 }

@@ -1,69 +1,54 @@
 package estatistica;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import model.Estudante;
 import utils.Rounder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 public class EstatisticaPorCurso extends Estatistica{
-    private Curso[] cursos;
+    private final List<Curso> cursos;
 
-    public EstatisticaPorCurso(){
-        this.cursos = new Curso[4];
-        for (int i = 0; i < cursos.length; i++) {
-            cursos[i] = new Curso();
-        }
-        totalPorCurso(cursos);
-        percentagemPorCurso(cursos);
+    public EstatisticaPorCurso(List<Estudante> estudantes){
+        super(estudantes);
+        this.cursos = new ArrayList<>();
+        totalPorCurso();
+        cursos.sort(Comparator.comparing(c -> c.nome));
     }
 
     //A classe faz calculo das médias e conta o total de alunos por curso
-    private void totalPorCurso(Curso[] cursos){
-        try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
-            br.readLine();
-            while (br.ready()) {
-                String[] tokens = br.readLine().split(",");
-                double media = Double.parseDouble(tokens[6]);
-                int index = switch(tokens[2]){
-                    case "Engenharia Informatica" -> NumCurso.INFORMATICA.ordinal();
-                    case "Engenharia Electronica" -> NumCurso.ELECTRONICA.ordinal();
-                    case "Engenharia Telecomunicacoes" -> NumCurso.TELECOMUNICACOES.ordinal();
-                    case "Engenharia de Redes" -> NumCurso.REDES.ordinal();
-                    default -> -1;
-                };
-                if(index != -1) {
-                    cursos[index].total++;
-                    cursos[index].media += media;
-                }
+    private void totalPorCurso(){
+        for (Estudante e : estudantes) {
+            Curso curso = procurarCurso(e.getCurso());
+            if (curso == null) {
+                curso = new Curso(e.getCurso());
+                cursos.add(curso);
             }
-            for(NumCurso i : NumCurso.values()){
-                Curso curso = cursos[i.ordinal()];
-                curso.media /= curso.total;
-                curso.media = Rounder.round(curso.media,2);
-            }
-        } catch(IOException e) {
-            System.out.println("Não foi possível ler o ficheiro");
+            curso.total++;
+            curso.somaMedias += e.getMedia();
         }
     }
 
-    private void percentagemPorCurso(Curso[] cursos){
-        for(NumCurso i : NumCurso.values()){
-            Curso curso = cursos[i.ordinal()];
-            curso.nome = i.nome;
-            curso.percentagem = Rounder.round((double)curso.total/totalEstudantes,2);
+    private Curso procurarCurso(String nome) {
+        for (Curso c : cursos) {
+            if (c.nome.equals(nome)) {
+                return c;
+            }
         }
+        return null;
     }
+
     @Override
     public String toString(){
         StringBuilder relatorio = new StringBuilder();
         relatorio.append("============= Estatistica por Curso ==================\n");
         for(Curso c: cursos){
             relatorio.append(
-                    "Engenharia "+c.nome+"\n"+
-                            "------------------------------\n"+
-                            "Estudantes: "+c.total+"\n"+
-                            "Percentagem: "+c.percentagem+"%\n"+
-                            "Média: "+c.media+"\n\n"
+                    c.nome+"\n"+
+                            "--------------------------------\n"+
+                            "Estudantes : "+c.total+"\n"+
+                            "Percentagem : "+Rounder.formatar(percentagem(c.total),2)+"%\n"+
+                            "Media : "+Rounder.formatar(c.somaMedias / c.total,2)+"\n\n"
 
             );
         }
@@ -73,26 +58,14 @@ public class EstatisticaPorCurso extends Estatistica{
 
 //Classes auxiliares
 class Curso{
-     String nome;
-     double media;
+     final String nome;
+     double somaMedias;
      int total;
-     double percentagem;
 
-     public Curso(){
-         this.media = 0;
+     public Curso(String nome){
+         this.nome = nome;
+         this.somaMedias = 0;
          this.total = 0;
-         this.percentagem = 0;
      }
 
-}
-
-enum NumCurso{
-    INFORMATICA("Informática"),
-    ELECTRONICA("Electrônica"),
-    TELECOMUNICACOES("Telecomunicações"),
-    REDES("De Redes");
-    String nome;
-    NumCurso(String nome){
-        this.nome = nome;
-    }
 }

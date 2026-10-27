@@ -1,104 +1,84 @@
 package estatistica;
+import java.util.List;
+import model.Estudante;
 import utils.Rounder;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.Arrays;
 
 public class EstatisticaDasMedias extends Estatistica{
         private double mediaGeral;
-        private Student[] estudanteExtremo;
+        private Estudante maiorMedia;
+        private Estudante menorMedia;
         private int[] quantidade;
+        private int comMaiorMedia;
+        private int comMenorMedia;
 
-        public EstatisticaDasMedias() {
-            this.mediaGeral = calcularMediaGeral();
-            this.estudanteExtremo = new Student[2];
-            this.quantidade = new int[4];
-            Arrays.fill(estudanteExtremo, null);
-            Arrays.fill(quantidade, 0);
-            mediaPorIntervalo(estudanteExtremo, quantidade);
+        public EstatisticaDasMedias(List<Estudante> estudantes) {
+            super(estudantes);
+            this.quantidade = new int[MediaIntervalo.values().length];
+            calcular();
     }
 
-    private double calcularMediaGeral(){
-            double media = 0;
-            try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
-                br.readLine();
-                while(br.ready()){
-                    String[] tokens = br.readLine().split(",");
-                    media += Double.parseDouble(tokens[6]);
-                }
-            }catch(IOException e){
-                System.out.println("Não foi possível abrir o ficheiro");
-            }
+    private void calcular(){
+            double soma = 0;
+            for (Estudante e : estudantes) {
+                double media = e.getMedia();
+                soma += media;
 
-            return Rounder.round(media/totalEstudantes,1);
+                if (menorMedia == null || media < menorMedia.getMedia()) {
+                    menorMedia = e;
+                }
+                if (maiorMedia == null || media > maiorMedia.getMedia()) {
+                    maiorMedia = e;
+                }
+
+                quantidade[MediaIntervalo.de(media).ordinal()]++;
+            }
+            mediaGeral = totalEstudantes == 0 ? 0 : soma / totalEstudantes;
+
+            for (Estudante e : estudantes) {
+                if (e.getMedia() == maiorMedia.getMedia()) comMaiorMedia++;
+                if (e.getMedia() == menorMedia.getMedia()) comMenorMedia++;
+            }
     }
 
-    private void mediaPorIntervalo(Student[] extremo,int[] quantidade){
-            int indexIntervalo;
-            double menorMedia = 99, maiorMedia = 0,media;
-            String nome;
-            try(BufferedReader br = ficheiroEstudante.abrirFicheiro()){
-                br.readLine();
-                while(br.ready()){
-                    String[] tokens = br.readLine().split(",");
-                    media = Double.parseDouble(tokens[6]);
-                    nome = tokens[1];
-                    if(media < menorMedia){
-                        menorMedia = media;
-                        extremo[0] = new Student(nome,media);
-                    }else if(media > maiorMedia){
-                        maiorMedia = media;
-                        extremo[1] = new Student(nome,media);
-                    }
-
-                    if(media < 10){
-                        indexIntervalo = MediaIntervalo.MENOR10.ordinal();
-                    } else if (media >= 10 && media < 14 ) {
-                        indexIntervalo = MediaIntervalo.ENTRE10E14.ordinal();
-                    } else if (media >= 14 && media < 17){
-                        indexIntervalo = MediaIntervalo.ENTRE14E17.ordinal();
-                    } else{
-                        indexIntervalo = MediaIntervalo.MAIOR17.ordinal();
-                    }
-                    quantidade[indexIntervalo] += 1;
-                }
-            }catch(IOException e){
-                System.out.println("Não foi possível abrir o ficheiro.");
-            }
+    private String outros(int comMesmaMedia) {
+        return comMesmaMedia > 1 ? " e mais "+(comMesmaMedia-1)+" com a mesma media" : "";
     }
 
     @Override
     public String toString() {
-            StringBuilder relatorio = new StringBuilder();
-        for (MediaIntervalo i: MediaIntervalo.values()) {
-            relatorio.append("Quantidade no intervalo "+i.nome+": "+quantidade[i.ordinal()]+"\n");
+        if (totalEstudantes == 0) {
+            return "============= Estatisticas das medias ==========\nSem estudantes.\n";
         }
-        return "============= Estatísticas das médias ==========\n"+
-                "Média académica geral: "+mediaGeral+"\n"+
-                "Estudante com maior média: "+estudanteExtremo[1].nome+"   Média: "+estudanteExtremo[1].media+"\n"+
-                "Estudante com menor média: "+estudanteExtremo[0].nome+"   Média: "+estudanteExtremo[0].media+"\n"+
+        StringBuilder relatorio = new StringBuilder();
+        for (MediaIntervalo i: MediaIntervalo.values()) {
+            relatorio.append("Quantidade com media "+i.nome+": "+quantidade[i.ordinal()]+"\n");
+        }
+        return "============= Estatisticas das medias ==========\n"+
+                "Media academica geral: "+Rounder.formatar(mediaGeral,2)+"\n"+
+                "Maior media: "+maiorMedia.getMedia()+"\n"+
+                "Menor media: "+menorMedia.getMedia()+"\n"+
+                "Estudante com maior media: "+maiorMedia.getNome()+" ("+maiorMedia.getCodigo()+")"+
+                        outros(comMaiorMedia)+"\n"+
+                "Estudante com menor media: "+menorMedia.getNome()+" ("+menorMedia.getCodigo()+")"+
+                        outros(comMenorMedia)+"\n"+
                 "Medias por intervalo\n"+
                 relatorio;
 
     }
 }
 
-class Student{
-    String nome;
-    double media;
-    public Student(String nome,double media){
-        this.nome = nome;
-        this.media = media;
-    }
-}
-
 enum MediaIntervalo{
-    MENOR10("< 10"),
-    ENTRE10E14("10-13,9"),
-    ENTRE14E17("14-16,9"),
-    MAIOR17("> 17");
+    MENOR10("inferior a 10"),
+    ENTRE10E14("entre 10 e 13,9"),
+    ENTRE14E17("entre 14 e 16,9"),
+    MAIOR17("igual ou superior a 17");
     String nome;
     MediaIntervalo(String nome){this.nome = nome;}
-}
 
+    static MediaIntervalo de(double media) {
+        if (media < 10) return MENOR10;
+        if (media < 14) return ENTRE10E14;
+        if (media < 17) return ENTRE14E17;
+        return MAIOR17;
+    }
+}

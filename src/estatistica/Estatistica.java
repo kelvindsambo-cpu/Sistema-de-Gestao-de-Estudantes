@@ -1,22 +1,23 @@
 package estatistica;
-import dados.*;
-import utils.Rounder;
 
-import java.io.*;
+import java.util.List;
+import model.Estudante;
 
 public abstract class Estatistica {
-    protected LeitorCSV ficheiroEstudante;
-    protected final Dados dados;
-    protected final int totalLinhas;
+    protected final List<Estudante> estudantes;
     protected final int totalEstudantes;
 
-    public Estatistica(){
-        this.ficheiroEstudante = new LeitorCSV();
-        this.dados = ficheiroEstudante.lerDados();
-        this.totalLinhas = dados.getLidas();
-        this.totalEstudantes = dados.getInseridos();
+    public Estatistica(List<Estudante> estudantes){
+        this.estudantes = estudantes;
+        this.totalEstudantes = estudantes.size();
+    }
+
+    protected double percentagem(int parte) {
+        if (totalEstudantes == 0) {
+            return 0;
+        }
+        return 100.0 * parte / totalEstudantes;
     }
 
     public  abstract String toString();
 }
-
